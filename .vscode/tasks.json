@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/AccessibilityOnlineApi.csproj",
+                "${workspaceFolder}/src/accessibilityonlineapi.api/AccessibilityOnlineApi.Api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/AccessibilityOnlineApi.csproj",
+                "${workspaceFolder}/src/accessibilityonlineapi.api/AccessibilityOnlineApi.Api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/AccessibilityOnlineApi.csproj"
+                "${workspaceFolder}/src/accessibilityonlineapi.api/AccessibilityOnlineApi.Api.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
