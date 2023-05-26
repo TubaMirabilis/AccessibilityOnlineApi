@@ -1,4 +1,7 @@
+using AccessibilityOnlineApi.Application.Dtos;
 using FluentValidation;
+
+namespace AccessibilityOnlineApi.Application.Users;
 
 public class CreateUserValidator : AbstractValidator<CreateUserDTO>
 {

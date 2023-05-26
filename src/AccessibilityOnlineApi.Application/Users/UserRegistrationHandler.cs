@@ -1,27 +1,36 @@
+using AccessibilityOnlineApi.Application.Dtos;
+using AccessibilityOnlineApi.Application.Interfaces;
+using AccessibilityOnlineApi.Application.Mapping;
+using AccessibilityOnlineApi.Application.Repositories;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+namespace AccessibilityOnlineApi.Application.Users;
 
 public class UserRegistrationHandler
 {
-    private readonly ApplicationDbContext _ctx;
+    private readonly IUserRepository _userRepository;
+    private readonly IKeyRepository _keyRepository;
     private readonly IValidator<CreateUserDTO> _validator;
     private readonly IMailService _mailService;
 
-    public UserRegistrationHandler(ApplicationDbContext ctx, IValidator<CreateUserDTO> validator, IMailService mailService)
+    public UserRegistrationHandler(IUserRepository userRepository, IKeyRepository keyRepository, IValidator<CreateUserDTO> validator, IMailService mailService)
     {
-        _ctx = ctx;
+        _userRepository = userRepository;
+        _keyRepository = keyRepository;
         _validator = validator;
         _mailService = mailService;
     }
 
     public async Task<IResult> HandleUserRegistration(CreateUserDTO dto, HttpRequest request)
     {
-        if (!IsApiKeyValid(request))
+        if (!await IsApiKeyValid(request))
         {
             return Results.Unauthorized();
         }
-        if (EmailAlreadyRegistered(dto.Email))
+        if (await EmailAlreadyRegistered(dto.Email))
         {
             return Results.Conflict("Email address is already registered.");
         }
@@ -46,18 +55,17 @@ public class UserRegistrationHandler
         }
         return await SaveUser(dto);
     }
-    private bool IsApiKeyValid(HttpRequest request)
+    private async Task<bool> IsApiKeyValid(HttpRequest request)
     {
         string? apiKey = request.Headers["apikey"].FirstOrDefault();
         if (string.IsNullOrEmpty(apiKey))
         {
             return false;
         }
-        return _ctx.Keys?.Any(x => x.Secret.ToString() == apiKey) ?? false;
+        return await _keyRepository.AuthenticateAsync(apiKey);
     }
-    private bool EmailAlreadyRegistered(string email)
-        => _ctx.Users is not null && _ctx.Users.Any(x => x.Email == email);
-
+    private async Task<bool> EmailAlreadyRegistered(string email)
+        => await _userRepository.AnyAsync(x => x.Email == email);
     private async Task<ValidationResult> ValidateDto(CreateUserDTO dto)
         => await _validator.ValidateAsync(dto);
 
@@ -76,8 +84,7 @@ public class UserRegistrationHandler
     private async Task<IResult> SaveUser(CreateUserDTO dto)
     {
         var user = new UserMapper().MapCreateUserDtoToUser(dto);
-        _ctx.Users!.Add(user);
-        await _ctx.SaveChangesAsync();
+        await _userRepository.AddUser(user);
         return Results.Created($"/users/{user.Id}", user);
     }
 }

@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+namespace AccessibilityOnlineApi.Domain;
+
 public class User
 {
     public Guid Id { get; set; }

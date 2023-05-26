@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AccessibilityOnlineApi.Domain;
+using Microsoft.EntityFrameworkCore;
+
+namespace AccessibilityOnlineApi.Infrastructure;
 
 public class ApplicationDbContext : DbContext
 {

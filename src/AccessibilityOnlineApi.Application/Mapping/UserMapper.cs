@@ -1,4 +1,8 @@
+using AccessibilityOnlineApi.Application.Dtos;
+using AccessibilityOnlineApi.Domain;
 using Riok.Mapperly.Abstractions;
+
+namespace AccessibilityOnlineApi.Application.Mapping;
 
 [Mapper]
 public partial class UserMapper

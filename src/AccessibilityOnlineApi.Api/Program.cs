@@ -1,14 +1,14 @@
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
+using AccessibilityOnlineApi.Application;
+using AccessibilityOnlineApi.Application.Dtos;
+using AccessibilityOnlineApi.Application.Users;
+using AccessibilityOnlineApi.Infrastructure;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables(prefix: "AOAPI_");
-var connectionString = builder.Configuration["MariaDB:ConnectionString"];
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-});
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", b =>
@@ -17,10 +17,6 @@ builder.Services.AddCors(options =>
              .AllowAnyHeader());
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<IValidator<CreateUserDTO>, CreateUserValidator>();
-builder.Services.AddScoped<IMailService, MailChimpService>();
-builder.Services.AddScoped<UserRegistrationHandler>();
 var app = builder.Build();
 app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();

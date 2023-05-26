@@ -1,6 +1,11 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using AccessibilityOnlineApi.Application.Dtos;
+using AccessibilityOnlineApi.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
+
+namespace AccessibilityOnlineApi.Infrastructure;
 
 public class MailChimpService : IMailService
 {

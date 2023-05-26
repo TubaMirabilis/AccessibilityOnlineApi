@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+namespace AccessibilityOnlineApi.Application.Dtos;
+
 public record CreateUserDTO
 {
     [StringLength(64)]
