@@ -31,7 +31,7 @@ public class MailChimpService : IMailService
         var payload = new
         {
             email_address = dto.Email,
-            status = "pending",
+            status = "subscribed",
             merge_fields = new
             {
                 FNAME = dto.FirstName,
